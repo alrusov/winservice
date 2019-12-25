@@ -22,6 +22,17 @@ type Handler func(*service.Service)
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
+// New --
+func New(config *service.Config, handler Handler) (*Service, error) {
+	me := &Service{
+		Config:  config,
+		handler: handler,
+	}
+	return me, nil
+}
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------//
+
 // Interactive --
 func (me *Service) Interactive() bool {
 	return service.Interactive()
@@ -63,31 +74,32 @@ func (me *Service) SystemLogger(errs chan<- error) (log.ServiceLogger, error) {
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
 
 // Go --
-func (me *Service) Go(command string, handler Handler) {
-	me.handler = handler
-
+func (me *Service) Go(command string) (err error) {
 	var serv service.Service
-	var err error
 
-	if serv, err = service.New(me, me.Config); err == nil {
-		if command == "" {
-			log.Message(log.INFO, `Service start initiated...`)
-			err = serv.Run()
-		} else {
-			log.Message(log.INFO, `Service command "%s" processing...`, command)
-			if command == "restart" {
-				service.Control(serv, "stop")
-				misc.Sleep(time.Duration(3) * time.Second)
-				err = service.Control(serv, "start")
-			} else {
-				err = service.Control(serv, command)
-			}
-		}
-	}
-
+	serv, err = service.New(me, me.Config)
 	if err != nil {
-		log.Message(log.CRIT, "%s", err)
+		return
 	}
+
+	if command == "" {
+		log.Message(log.INFO, `Service start initiated...`)
+		err = serv.Run()
+		return
+	}
+
+	log.Message(log.INFO, `Service command "%s" processing...`, command)
+
+	if command == "restart" {
+		// workaround...
+		service.Control(serv, "stop")
+		misc.Sleep(time.Duration(3) * time.Second)
+		err = service.Control(serv, "start")
+	} else {
+		err = service.Control(serv, command)
+	}
+
+	return
 }
 
 //--------------------------------------------------------------------------------------------------------------------------------------------------------------//
