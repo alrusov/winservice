@@ -1,9 +1,9 @@
 module github.com/alrusov/winservice
 
-go 1.14
+go 1.15
 
 require (
-	github.com/alrusov/log v0.1.22
-	github.com/alrusov/misc v0.1.18
-	github.com/kardianos/service v1.0.0
+	github.com/alrusov/log v0.1.28
+	github.com/alrusov/misc v0.1.34
+	github.com/kardianos/service v1.2.0
 )
