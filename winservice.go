@@ -93,7 +93,7 @@ func (me *Service) Go(command string) (err error) {
 	if command == "restart" {
 		// workaround...
 		service.Control(serv, "stop")
-		misc.Sleep(time.Duration(3) * time.Second)
+		misc.Sleep(3 * time.Second)
 		err = service.Control(serv, "start")
 	} else {
 		err = service.Control(serv, command)
