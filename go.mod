@@ -10,5 +10,5 @@ require (
 
 require (
 	github.com/alrusov/panic v0.1.14 // indirect
-	golang.org/x/sys v0.0.0-20201015000850-e3ed0017c211 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 )
